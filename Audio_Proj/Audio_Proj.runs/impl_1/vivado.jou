@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2024.1.2 (64-bit)
+# SW Build 5164865 on Thu Sep  5 14:37:11 MDT 2024
+# IP Build 5164407 on Fri Sep  6 08:18:11 MDT 2024
+# SharedData Build 5164864 on Thu Sep 05 13:09:09 MDT 2024
+# Start of session at: Fri Nov 15 15:28:11 2024
+# Process ID: 40124
+# Current directory: C:/Users/power/Documents/WSU/Fall_24/EE_415/Project/Audio_Proj/Audio_Proj.runs/impl_1
+# Command line: vivado.exe -log audio_pipeline.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source audio_pipeline.tcl -notrace
+# Log file: C:/Users/power/Documents/WSU/Fall_24/EE_415/Project/Audio_Proj/Audio_Proj.runs/impl_1/audio_pipeline.vdi
+# Journal file: C:/Users/power/Documents/WSU/Fall_24/EE_415/Project/Audio_Proj/Audio_Proj.runs/impl_1\vivado.jou
+# Running On        :pwr_asus
+# Platform          :Windows Server 2016 or Windows 10
+# Operating System  :22631
+# Processor Detail  :Intel(R) Core(TM) Ultra 7 155H
+# CPU Frequency     :2995 MHz
+# CPU Physical cores:16
+# CPU Logical cores :22
+# Host memory       :16507 MB
+# Swap memory       :8502 MB
+# Total Virtual     :25009 MB
+# Available Virtual :4934 MB
+#-----------------------------------------------------------
+source audio_pipeline.tcl -notrace
