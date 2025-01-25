@@ -4,13 +4,11 @@ module audio_pipeline_top (
     output wire clk_mic,          // Clock to drive the mic
     input wire pdm_in,            // PDM input from microphone
     output wire pwm_left,         // PWM output for left channel
-    output wire pwm_right,        // PWM output for right channel
-    output reg [4:0] LED
+    output wire pwm_right         // PWM output for right channel
 );
 
-    // Clock signals
+    // Clock signal
     wire clk_4mhz;
-    wire clk_48khz;
 
     // PCM signal
     wire [23:0] pcm_out; // Updated to 24-bit
@@ -19,15 +17,14 @@ module audio_pipeline_top (
     clock_divider clock_div_inst (
         .clk_in(clk_in),
         .reset(reset),
-        .clk_4mhz(clk_4mhz),
-        .clk_48khz(clk_48khz)
+        .clk_4mhz(clk_4mhz)
     );
 
     assign clk_mic = clk_4mhz;
 
     // Instantiate PDM to PCM Converter
     pdm_to_pcm pdm_to_pcm_inst (
-        .clk(clk_mic),          // 3.072 MHz clock
+        .clk(clk_mic),          // 4.16 MHz clock
         .reset(reset),
         .pdm_in(pdm_in),
         .pcm_out(pcm_out)       // Updated to 24-bit
@@ -35,17 +32,17 @@ module audio_pipeline_top (
 
     // Instantiate PCM to PWM Converter for Left Channel
     pcm_to_pwm pcm_to_pwm_left (
-        .clk(clk_in),         // 48 kHz clock
+        .clk(clk_in),
         .reset(reset),
-        .pcm_in(pcm_out),        // Updated to 24-bit
+        .pcm_in(pcm_out),
         .pwm_out(pwm_left)
     );
 
     // Instantiate PCM to PWM Converter for Right Channel
     pcm_to_pwm pcm_to_pwm_right (
-        .clk(clk_48khz),         // 48 kHz clock
+        .clk(clk_in),
         .reset(reset),
-        .pcm_in(pcm_out),        // Updated to 24-bit
+        .pcm_in(pcm_out),
         .pwm_out(pwm_right)
     );
 
@@ -54,24 +51,21 @@ endmodule
 module clock_divider (
     input wire clk_in,          // 100 MHz clock
     input wire reset,           // Reset signal
-    output reg clk_4mhz,        // 3.072 MHz clock output
-    output reg clk_48khz        // 48 kHz clock output
+    output reg clk_4mhz         // 4.16 MHz clock output
 );
 
     // Parameters for clock division
-    parameter DIV_4MHZ = 24;    // 100 MHz / 4.16 MHz = ~24
-    parameter DIV_48KHZ = 2083; // 100 MHz / 48 kHz = ~2083.33
+    parameter HC_4mhz = 12;    // 100 MHz / 4.16 MHz = ~24 -> 12 for half-cycle
 
     // Counters for clock division
-    reg [15:0] counter_4mhz = 0;
-    reg [15:0] counter_48khz = 0;
+    reg [3:0] counter_4mhz = 0;
 
     // 3.072 MHz Clock Divider
     always @(posedge clk_in or posedge reset) begin
         if (reset) begin
             counter_4mhz <= 0;
             clk_4mhz <= 0;
-        end else if (counter_4mhz >= (DIV_4MHZ - 1)) begin
+        end else if (counter_4mhz >= (HC_4mhz - 1)) begin
             counter_4mhz <= 0;
             clk_4mhz <= ~clk_4mhz;
         end else begin
@@ -79,23 +73,10 @@ module clock_divider (
         end
     end
 
-    // 48 kHz Clock Divider
-    always @(posedge clk_in or posedge reset) begin
-        if (reset) begin
-            counter_48khz <= 0;
-            clk_48khz <= 0;
-        end else if (counter_48khz >= (DIV_48KHZ - 1)) begin
-            counter_48khz <= 0;
-            clk_48khz <= ~clk_48khz;
-        end else begin
-            counter_48khz <= counter_48khz + 1;
-        end
-    end
-
 endmodule
 
 module pcm_to_pwm (
-    input wire clk,              // High-frequency clock (e.g., 1 MHz or higher)
+    input wire clk,              // High-frequency clock
     input wire reset,            // Reset signal
     input wire [23:0] pcm_in,    // Updated to 24-bit signed PCM input
     output reg pwm_out           // PWM output signal
@@ -103,7 +84,7 @@ module pcm_to_pwm (
 
     // Parameters
     parameter PWM_FREQ = 48000;  // Desired PWM frequency (48 kHz)
-    parameter CLK_FREQ = 1000000; // Clock frequency driving this module (e.g., 1 MHz)
+    parameter CLK_FREQ = 1000000; // Clock frequency driving this module
     parameter MAX_VAL = 24'hFFFFFF; // Maximum PCM value (unsigned 24-bit)
 
     // Derived parameters
@@ -119,7 +100,7 @@ module pcm_to_pwm (
             duty_cycle <= 0;
         end else begin
             // Convert signed PCM to unsigned duty cycle
-            duty_cycle <= pcm_in >> 3; // Adjust as needed for scaling
+            duty_cycle <= pcm_in; // Adjust as needed for scaling
         end
     end
 
@@ -183,7 +164,7 @@ module pdm_to_pcm (
             end
 
             // Convert the accumulated value to signed PCM
-            pcm_out <= accumulator - (FILTER_TAPS >> 1); // Center around 0
+            pcm_out <= (accumulator - (FILTER_TAPS >> 1)); // Center around 0
         end
     end
 
