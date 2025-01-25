@@ -13,10 +13,3 @@ set_property -dict {PACKAGE_PIN B14 IOSTANDARD LVCMOS33} [get_ports {pwm_right}]
 # PWM Microphone signals
 set_property -dict {PACKAGE_PIN E12 IOSTANDARD LVCMOS33} [get_ports {clk_mic}]
 set_property -dict {PACKAGE_PIN D12 IOSTANDARD LVCMOS33} [get_ports {pdm_in}]
-
-# On Board LEDs
-set_property -dict {PACKAGE_PIN C13 IOSTANDARD LVCMOS33} [get_ports {LED[0]}]
-set_property -dict {PACKAGE_PIN C14 IOSTANDARD LVCMOS33} [get_ports {LED[1]}]
-set_property -dict {PACKAGE_PIN D14 IOSTANDARD LVCMOS33} [get_ports {LED[2]}]
-set_property -dict {PACKAGE_PIN D15 IOSTANDARD LVCMOS33} [get_ports {LED[3]}]
-set_property -dict {PACKAGE_PIN D16 IOSTANDARD LVCMOS33} [get_ports {LED[4]}]
