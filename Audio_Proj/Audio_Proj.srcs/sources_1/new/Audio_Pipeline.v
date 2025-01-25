@@ -24,7 +24,7 @@ module audio_pipeline_top (
 
     // Instantiate PDM to PCM Converter
     pdm_to_pcm pdm_to_pcm_inst (
-        .clk(clk_mic),          // 4.16 MHz clock
+        .clk(clk_mic),          // 4.55 MHz clock
         .reset(reset),
         .pdm_in(pdm_in),
         .pcm_out(pcm_out)       // Updated to 24-bit
@@ -51,16 +51,16 @@ endmodule
 module clock_divider (
     input wire clk_in,          // 100 MHz clock
     input wire reset,           // Reset signal
-    output reg clk_4mhz         // 4.16 MHz clock output
+    output reg clk_4mhz         // 4.55 MHz clock output
 );
 
     // Parameters for clock division
-    parameter HC_4mhz = 12;    // 100 MHz / 4.16 MHz = ~24 -> 12 for half-cycle
+    parameter HC_4mhz = 11;    // 100 MHz / 4.55 MHz = ~22 -> 11 for half-cycle
 
     // Counters for clock division
     reg [3:0] counter_4mhz = 0;
 
-    // 3.072 MHz Clock Divider
+    // 4.55 MHz Clock Divider
     always @(posedge clk_in or posedge reset) begin
         if (reset) begin
             counter_4mhz <= 0;
@@ -83,7 +83,7 @@ module pcm_to_pwm (
 );
 
     // Parameters
-    parameter PWM_FREQ = 48000;  // Desired PWM frequency (48 kHz)
+    parameter PWM_FREQ = 96000;  // Desired PWM frequency (48 kHz)
     parameter CLK_FREQ = 1000000; // Clock frequency driving this module
     parameter MAX_VAL = 24'hFFFFFF; // Maximum PCM value (unsigned 24-bit)
 
@@ -129,7 +129,7 @@ module pcm_to_pwm (
 endmodule
 
 module pdm_to_pcm (
-    input wire clk,              // 3.072 MHz clock
+    input wire clk,              // 4.55 MHz clock
     input wire reset,            // Reset signal
     input wire pdm_in,           // PDM input from microphone
     output reg [23:0] pcm_out    // Updated to 24-bit signed PCM output
