@@ -25,7 +25,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/Users/power/Documents/WSU/Fall_24/EE_415/Project/Audio_Proj/Audio_Proj.runs/impl_1'
+HD_PWD='C:/Users/power/Documents/WSU/2024-25/Spring_25/EE_416/Git_testing/FPGA_Audio/Audio_Proj/Audio_Proj.runs/impl_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log
@@ -43,6 +43,6 @@ EAStep()
 
 # pre-commands:
 /bin/touch .init_design.begin.rst
-EAStep vivado -log audio_pipeline.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source audio_pipeline.tcl -notrace
+EAStep vivado -log audio_pipeline_top.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source audio_pipeline_top.tcl -notrace
 
 
