@@ -1,0 +1,1 @@
+This is a small project that utilizes the Urbana Board FPGA from RealDigital with the purpose of converting PDM data from the on-board microphone to a PWM wave. This is suitable for connecting an audio device to the 3.5mm jack on the board.
